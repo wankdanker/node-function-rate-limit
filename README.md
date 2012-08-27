@@ -23,7 +23,7 @@ api
 
 ###rateLimit(limitCount, limitInterval, function);
 
-returns a rate limited which should be called instead of the the `function` passed to `rateLimit`
+returns a rate limited function which should be called instead of the the `function` passed to `rateLimit`
 
 * _limitCount_ - the number of times per `limitInterval` to limit execution of `function`
 * _limitInterval_ - the duration of time during which to limit execution of `function` specified in ms
