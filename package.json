@@ -1,0 +1,20 @@
+{
+  "name": "function-rate-limit",
+  "version": "0.0.1",
+  "description": "Limit the execution rate of any function",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodeunit test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/wankdanker/node-function-rate-limit.git"
+  },
+  "keywords": [
+    "rate",
+    "limit",
+    "function"
+  ],
+  "author": "Dan VerWeire",
+  "license": "MIT"
+}
