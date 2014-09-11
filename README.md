@@ -33,7 +33,7 @@ example
 -------
 
 ```javascript
-var rateLimit = require('funciton-rate-limit');
+var rateLimit = require('function-rate-limit');
 
 //limit to 1 execution per 1000ms
 var fn = rateLimit(1, 1000, function (x) {
