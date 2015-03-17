@@ -46,6 +46,29 @@ test('should allow for calls to burst', function (done) {
     }
 });
 
+test('should preserve function context', function (done) {
+    var start = Date.now();
+
+    // time that passes is 400ms since the first call executes immediate
+    var expected = [0, 100, 200, 300, 400];
+    var offsets = [];
+
+    var trigger = after(5, function() {
+        fuzzy_compare(expected, offsets)
+        done();
+    });
+
+    var fn = rateLimit(1, 100, function() {
+        assert(this.foo === 'bar');
+        offsets.push(Date.now() - start);
+        trigger();
+    });
+
+    for (var i = 0; i < 5; ++i) {
+        fn.call({ foo: 'bar' }, i);
+    }
+});
+
 function fuzzy_compare(expected, actual) {
     assert.equal(expected.length, actual.length);
 
