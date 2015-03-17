@@ -1,27 +1,21 @@
 node-function-rate-limit
 --------------
 
-Limit the execution rate of any function. 
+Limit the execution rate of any function.
 
 install
 ---------
 
-with npm...
+with [npm](https://npmjs.org)
 
 ```bash
 npm install function-rate-limit
 ```
 
-or with git...
-
-```bash
-git clone git://github.com/wankdanker/node-function-rate-limit.git
-```
-
 api
 ----
 
-###rateLimit(limitCount, limitInterval, function);
+### rateLimit(limitCount, limitInterval, function);
 
 returns a rate limited function which should be called instead of the the `function` passed to `rateLimit`
 
@@ -29,15 +23,18 @@ returns a rate limited function which should be called instead of the the `funct
 * _limitInterval_ - the duration of time during which to limit execution of `function` specified in ms
 * _function_ - the function which should be rate limited
 
+`function` will be called up to `limitCount` times during `limitInterval` including bursting.
+
 example
 -------
 
 ```javascript
 var rateLimit = require('function-rate-limit');
 
-//limit to 1 execution per 1000ms
-var fn = rateLimit(1, 1000, function (x) {
-  console.log('%s - %s', new Date(), x);
+// limit to 2 executions per 1000ms
+var start = Date.now()
+var fn = rateLimit(2, 1000, function (x) {
+  console.log('%s ms - %s', Date.now() - start, x);
 });
 
 for (var y = 0; y < 10; y++) {
@@ -48,17 +45,22 @@ for (var y = 0; y < 10; y++) {
 results in:
 
 ```bash
-Mon Aug 27 2012 15:21:41 GMT-0400 (EDT) - 0
-Mon Aug 27 2012 15:21:42 GMT-0400 (EDT) - 1
-Mon Aug 27 2012 15:21:43 GMT-0400 (EDT) - 2
-Mon Aug 27 2012 15:21:44 GMT-0400 (EDT) - 3
-Mon Aug 27 2012 15:21:45 GMT-0400 (EDT) - 4
-Mon Aug 27 2012 15:21:46 GMT-0400 (EDT) - 5
-Mon Aug 27 2012 15:21:47 GMT-0400 (EDT) - 6
-Mon Aug 27 2012 15:21:48 GMT-0400 (EDT) - 7
-Mon Aug 27 2012 15:21:49 GMT-0400 (EDT) - 8
-Mon Aug 27 2012 15:21:50 GMT-0400 (EDT) - 9
+10 ms - 0
+11 ms - 1
+1004 ms - 2
+1012 ms - 3
+2008 ms - 4
+2013 ms - 5
+3010 ms - 6
+3014 ms - 7
+4017 ms - 8
+4017 ms - 9
 ```
+
+pre 1.x behavior
+-------------
+
+Prior to version 1.x.x, this module behaved as a throttle module. `function` would be invoked only one time per `limitCount/limitInterval` with no bursting. If you need this functionality again and do not want bursting, see the `lodash.throttle` module.
 
 license
 ----------
