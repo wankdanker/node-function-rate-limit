@@ -1,6 +1,8 @@
 node-function-rate-limit
 --------------
 
+[![Build Status](https://travis-ci.org/wankdanker/node-function-rate-limit.svg)](https://travis-ci.org/wankdanker/node-function-rate-limit)
+
 Limit the execution rate of any function.
 
 install
