@@ -16,6 +16,7 @@
     "function"
   ],
   "devDependencies": {
+    "after": "^0.8.1",
     "mocha": "2.2.1"
   },
   "author": "Dan VerWeire",
