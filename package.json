@@ -1,6 +1,6 @@
 {
   "name": "function-rate-limit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Limit the execution rate of any function",
   "main": "index.js",
   "scripts": {
