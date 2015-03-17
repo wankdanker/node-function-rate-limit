@@ -1,125 +1,60 @@
+var assert = require('assert');
+var after = require('after');
+
 var rateLimit = require('./');
 
-exports["one per interval"] = function (test) {
-	var startTime = new Date().getTime();
-	
-	//this rate limited function will be executed 6 times in total.
-	//it is limited to 1 execution per 100ms therefore it should take
-	//600ms in total to process.
-	//however the first execution happens at 0ms and each subsequent
-	//execution occurs 100ms following the previous execution.
-	//
-	//like this:
-	//
-	//execution #1 - 0ms
-	//execution #2 - 100ms
-	//execution #3 - 200ms
-	//execution #4 - 300ms
-	//execution #5 - 400ms
-	//execution #6 - 500ms
-	//
-	//so the time that passes is 500ms and not 600ms
-	
-	var fn = rateLimit(1, 100, function (x) {
-		if (x === 5) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 5);
-			test.done();
-		}
-	});
-	
-	for (var x = 0; x <= 5; x ++) {
-		fn(x);
-	}
-};
+test('should only allow one call per interval', function (done) {
+    var start = Date.now();
 
-exports["one per interval - wait before starting"] = function (test) {
-	var startTime = new Date().getTime();
-	
-	var fn = rateLimit(1, 100, function (x) {
-		if (x === 5) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 10);
-			test.done();
-		}
-	});
-	
-	setTimeout(function () {
-		for (var x = 0; x <= 5; x ++) {
-			fn(x);
-		}
-	}, 500);
-};
+    // time that passes is 400ms since the first call executes immediate
+    var expected = [0, 100, 200, 300, 400];
+    var offsets = [];
 
-exports["two per interval"] = function (test) {
-	var startTime = new Date().getTime();
-	
-	var fn = rateLimit(2, 100, function (x) {
-		if (x === 5) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 3);
-			test.done();
-		}
-	});
-	
-	for (var x = 0; x <= 5; x ++) {
-		fn(x);
-	}
-};
+    var trigger = after(5, function() {
+        fuzzy_compare(expected, offsets)
+        done();
+    });
 
-exports["two per interval - wait before starting"] = function (test) {
-	var startTime = new Date().getTime();
-	
-	var fn = rateLimit(2, 100, function (x) {
-		if (x === 5) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 8);
-			test.done();
-		}
-	});
-	
-	setTimeout(function () {
-		for (var x = 0; x <= 5; x ++) {
-			fn(x);
-		}
-	}, 500);
-};
+    var fn = rateLimit(1, 100, function() {
+        offsets.push(Date.now() - start);
+        trigger();
+    });
 
+    for (var i = 0; i < 5; ++i) {
+        fn(i);
+    }
+});
 
-exports["one per interval - random delays"] = function (test) {
-	var startTime = new Date().getTime();
-	var delays = [100, 1000, 500, 600, 700];
-	
-	var fn = rateLimit(1, 100, function (delay) {
-		if (delay === 1000) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 10);
-			test.done();
-		}
-	});
-	
-	delays.forEach(function (delay) {
-		setTimeout(function () {
-				fn(delay);
-		}, delay );
-	})
-};
+test('should allow for calls to burst', function (done) {
+    var start = Date.now();
+    var expected = [0, 0, 100, 100, 200];
+    var offsets = [];
 
-exports["50 per interval - 1000 records"] = function (test) {
-	var startTime = new Date().getTime();
-	var records = [];
-	var result = [];
-	
-	for (var x = 0; x < 1000; x++) {
-		records.push(x);
-	}
-	
-	var fn = rateLimit(50, 100, function (val) {
-		result.push(val);
-		
-		if (val === 999) {
-			test.equal(Math.round((new Date().getTime() - startTime) / 100), 20);
-			test.deepEqual(records, result);
-			test.done();
-		}
-	});
-	
-	records.forEach(function (val) {
-		fn(val);
-	})
-};
+    // time that passes is 400ms since the first call executes immediate
+    var trigger = after(5, function() {
+        fuzzy_compare(expected, offsets)
+        done();
+    });
+
+    var fn = rateLimit(2, 100, function() {
+        offsets.push(Date.now() - start);
+        trigger();
+    });
+
+    for (var i = 0; i < 5; ++i) {
+        fn(i);
+    }
+});
+
+function fuzzy_compare(expected, actual) {
+    assert.equal(expected.length, actual.length);
+
+    expected.forEach(function(expected_value, idx) {
+        var actual_val = actual[idx];
+
+        var diff = Math.abs(expected_value - actual_val);
+        if (diff > 20) {
+            throw new Error('actual and expected values differ too much: actual ' + actual_val + ' != ' + expected_value);
+        }
+    });
+}

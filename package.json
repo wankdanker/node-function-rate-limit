@@ -4,7 +4,7 @@
   "description": "Limit the execution rate of any function",
   "main": "index.js",
   "scripts": {
-    "test": "nodeunit test.js"
+    "test": "mocha --ui qunit --reporter spec test.js"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,9 @@
     "limit",
     "function"
   ],
+  "devDependencies": {
+    "mocha": "2.2.1"
+  },
   "author": "Dan VerWeire",
   "license": "MIT"
 }
