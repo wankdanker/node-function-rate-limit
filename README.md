@@ -19,7 +19,7 @@ api
 
 ### rateLimit(limitCount, limitInterval, function);
 
-returns a rate limited function which should be called instead of the the `function` passed to `rateLimit`
+returns a rate limited function which should be called instead of the `function` passed to `rateLimit`
 
 * _limitCount_ - the number of times per `limitInterval` to limit execution of `function`
 * _limitInterval_ - the duration of time during which to limit execution of `function` specified in ms
@@ -27,7 +27,7 @@ returns a rate limited function which should be called instead of the the `funct
 
 `function` will be called up to `limitCount` times during `limitInterval` including bursting.
 
-example
+Example
 -------
 
 ```javascript
@@ -64,7 +64,7 @@ pre 1.x behavior
 
 Prior to version 1.x.x, this module behaved as a throttle module. `function` would be invoked only one time per `limitCount/limitInterval` with no bursting. If you need this functionality again and do not want bursting, see the `lodash.throttle` module.
 
-license
+License
 ----------
 
 ### The MIT License (MIT)
