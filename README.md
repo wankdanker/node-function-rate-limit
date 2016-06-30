@@ -1,7 +1,8 @@
 node-function-rate-limit
 --------------
 
-[![Build Status](https://travis-ci.org/wankdanker/node-function-rate-limit.svg)](https://travis-ci.org/wankdanker/node-function-rate-limit)
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
 
 Limit the execution rate of any function.
 
@@ -90,3 +91,8 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[npm-image]: https://img.shields.io/npm/v/function-rate-limit.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/function-rate-limit
+[travis-image]: https://travis-ci.org/wankdanker/node-function-rate-limit.svg?style=flat-square
+[travis-url]: https://travis-ci.org/wankdanker/node-function-rate-limit
