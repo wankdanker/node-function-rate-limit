@@ -1,44 +1,22 @@
-module.exports = rateLimit;
+module.exports = (limitCount, limitInterval, fn) => {
+  const fifo = [];
+  let count = limitCount;
 
-function rateLimit(limitCount, limitInterval, fn) {
-  var fifo = [];
+  const delayOrIncreaseCounter = (next) => fifo.length ? next() : count += 1;
 
-  // count starts at limit
-  // each call of `fn` decrements the count
-  // it is incremented after limitInterval
-  var count = limitCount;
-
-  function call_next(args) {
-    setTimeout(function() {
-      if (fifo.length > 0) {
-        call_next();
-      }
-      else {
-        count = count + 1;
-      }
-    }, limitInterval);
-
-    var call_args = fifo.shift();
-
-    // if there is no next item in the queue
-    // and we were called with args, trigger function immediately
-    if (!call_args && args) {
-      fn.apply(args[0], args[1]);
-      return;
-    }
-
-    fn.apply(call_args[0], call_args[1]);
+  const callNext = (args) => {
+    setTimeout(delayOrIncreaseCounter, limitInterval, callNext);
+    const [ctx, params] = fifo.length ? fifo.shift() : args;
+    fn.apply(ctx, params);
   }
 
-  return function rate_limited_function() {
-    var ctx = this;
-    var args = Array.prototype.slice.call(arguments);
+  return function rate_limited_function(...args) {
+    const ctx = this;
     if (count <= 0) {
       fifo.push([ctx, args]);
-      return;
+    } else {
+      count -= 1;
+      callNext([ctx, args]);
     }
-
-    count = count - 1;
-    call_next([ctx, args]);
   };
 }
